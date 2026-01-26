@@ -32,11 +32,15 @@ export default function Signup() {
         throw new Error(errorData.detail || 'Une erreur est survenue');
       }
 
-      setSuccessMessage('Inscription réussie! Redirection vers la connexion...');
+       const responseData = await response.json();
+      localStorage.setItem('token', responseData.token);
+      localStorage.setItem('email', responseData.email);
+
+      setSuccessMessage('Inscription réussie! Redirection vers le dashboard...');
       
       // Redirection après 2 secondes
       setTimeout(() => {
-        window.location.href = '/login';
+        window.location.href = '/dashboard';
       }, 2000);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Une erreur est survenue';
