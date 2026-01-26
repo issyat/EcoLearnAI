@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.so
+*.egg-info/
+.venv/
+.env
+.env.*
+
+# Node/React
+node_modules/
+.dist/
+dist/
+build/
+.npmrc
+pnpm-lock.yaml
+
+# Editors/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Coverage
+htmlcov/
+.coverage*
+.pytest_cache/
+
+# Containers
+*.pid
+*.log
