@@ -1,12 +1,11 @@
 from pathlib import Path
 
 import pytest
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.db import get_db
 from app.main import app
 from app.models import Base
-
 
 # Use a local SQLite database for tests to avoid needing an external Postgres instance
 _TEST_DB_PATH = Path(__file__).parent / "test.db"

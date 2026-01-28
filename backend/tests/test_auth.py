@@ -1,5 +1,5 @@
 import pytest
-from httpx import ASGITransport, AsyncClient
+from httpx import AsyncClient
 from sqlalchemy import select
 
 from app.main import app
@@ -9,8 +9,7 @@ from app.models import User
 @pytest.mark.anyio
 async def test_register_success() -> None:
     """Test successful user registration."""
-    from httpx import ASGITransport
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+    async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post(
             "/api/v1/auth/register",
             json={
@@ -30,8 +29,7 @@ async def test_register_success() -> None:
 @pytest.mark.anyio
 async def test_register_duplicate_email() -> None:
     """Test registration with duplicate email fails."""
-    from httpx import ASGITransport
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+    async with AsyncClient(app=app, base_url="http://test") as ac:
         # First registration
         await ac.post(
             "/api/v1/auth/register",
@@ -57,8 +55,7 @@ async def test_register_duplicate_email() -> None:
 @pytest.mark.anyio
 async def test_register_weak_password() -> None:
     """Test registration with weak password fails."""
-    from httpx import ASGITransport
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+    async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post(
             "/api/v1/auth/register",
             json={
@@ -74,8 +71,7 @@ async def test_register_weak_password() -> None:
 @pytest.mark.anyio
 async def test_register_invalid_email() -> None:
     """Test registration with invalid email fails."""
-    from httpx import ASGITransport
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+    async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post(
             "/api/v1/auth/register",
             json={
@@ -90,10 +86,9 @@ async def test_register_invalid_email() -> None:
 @pytest.mark.anyio
 async def test_password_is_hashed() -> None:
     """Test that password is hashed in database."""
-    from httpx import ASGITransport
     from tests.conftest import TestSessionLocal
     
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+    async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post(
             "/api/v1/auth/register",
             json={
