@@ -231,65 +231,6 @@ export default function Dashboard() {
     }
   };
 
-  const oldMockLessons: Record<string, Lesson> = {
-    sustainable_transport: {
-      id: '1',
-      topic: 'Sustainable Transport',
-      content: `Les transports durables sont essentiels pour réduire notre empreinte carbone. Utiliser les transports en commun, le vélo ou la marche peut réduire les émissions de CO2 de jusqu'à 75% par rapport à la voiture personnelle. 
-
-Les avantages incluent:
-- Réduction de la pollution de l'air
-- Amélioration de la santé publique
-- Réduction des embouteillages
-- Économies d'argent à long terme
-
-Commencez dès aujourd'hui en utilisant les transports en commun pour vos trajets quotidiens!`,
-      actions: ['👍 J\'approuve', '🚗 Utiliser la voiture', '🚴 Prendre le vélo'],
-    },
-    renewable_energy: {
-      id: '2',
-      topic: 'Renewable Energy',
-      content: `L'énergie renouvelable est la clé pour un avenir durable. Les panneaux solaires, les éoliennes et l'hydroélectricité fournissent une énergie propre sans émissions de carbone.
-
-Faits intéressants:
-- Le soleil fournit assez d'énergie en 1 heure pour alimenter le monde pendant un an
-- Les énergies renouvelables représentent maintenant 30% de la production d'électricité mondiale
-- Installer des panneaux solaires peut réduire votre facture d'électricité de 50-80%
-
-Passez à l'énergie renouvelable pour votre maison!`,
-      actions: ['💡 Installer des panneaux solaires', '🔌 Énergie fossile', '⚡ En savoir plus'],
-    },
-    food_diet: {
-      id: '3',
-      topic: 'Food & Diet',
-      content: `Une alimentation durable commence par des choix alimentaires responsables. Réduire la consommation de viande et augmenter les aliments d'origine végétale peut réduire votre empreinte carbone de 75%.
-
-Conseils pour une alimentation durable:
-- Manger moins de viande rouge
-- Privilégier les produits locaux et de saison
-- Réduire le gaspillage alimentaire
-- Cultiver vos propres légumes si possible
-
-Une personne végétarienne émet 2,9 tonnes de CO2 par an, contre 7,2 tonnes pour un omnivore!`,
-      actions: ['🥬 Devenir végétarien', '🍔 Rester omnivore', '🌾 Acheter local'],
-    },
-    digital_pollution: {
-      id: '4',
-      topic: 'Digital Pollution',
-      content: `La pollution numérique est souvent ignorée, mais elle a un impact significatif sur l'environnement. Chaque email génère 4g de CO2, et les data centers consomment 2-3% de l'électricité mondiale.
-
-Réduire la pollution numérique:
-- Supprimer les anciens emails
-- Streamer vidéo en basse qualité
-- Garder les appareils plus longtemps
-- Utiliser des moteurs de recherche écologiques
-- Réduire le temps d'écran
-
-Des changements simples peuvent réduire votre pollution numérique de 30%!`,
-      actions: ['♻️ Supprimer les anciens emails', '📱 Garder le même téléphone', '🌍 Utiliser Ecosia'],
-    },
-  };
-
   return (
     <div className="dashboard-container">
       {/* Header / Nav */}
