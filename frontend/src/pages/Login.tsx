@@ -33,7 +33,7 @@ export default function Login() {
       }
 
       const responseData = await response.json();
-      localStorage.setItem('token', responseData.token);
+      localStorage.setItem('token', responseData.access_token);
       localStorage.setItem('email', responseData.email);
 
       setSuccessMessage('Connexion réussie! Redirection vers le dashboard...');

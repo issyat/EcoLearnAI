@@ -1,0 +1,96 @@
+/* ============================================
+   DASHBOARD STYLES - ECO THEME
+   Consistent with Login/Signup
+   ============================================ */
+
+:root {
+  --primary-green: #a8d5ba;
+  --dark-green: #6b9b7f;
+  --light-green: #d4edda;
+  --lighter-green: #e8f5e9;
+  --accent-green: #81c784;
+  --text-dark: #2c3e2f;
+  --white: #ffffff;
+  --shadow: 0 4px 6px rgba(107, 155, 127, 0.1);
+}
+
+.dashboard-container {
+  min-height: 100vh;
+  background-color: var(--lighter-green); /* Matching the light green theme */
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-navbar {
+  width: 100%;
+  height: 70px;
+  background-color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-sizing: border-box;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.navbar-brand h1 {
+  margin: 0;
+  color: var(--dark-green);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.navbar-brand .eco-icon {
+  font-size: 1.5rem;
+}
+
+.logout-btn {
+  background-color: transparent;
+  color: var(--dark-green);
+  border: 2px solid var(--dark-green);
+  padding: 8px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: var(--dark-green);
+  color: var(--white);
+  transform: translateY(-1px);
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Response handling for smaller screens */
+@media (max-width: 768px) {
+  .dashboard-navbar {
+    padding: 0 1rem;
+  }
+  
+  .navbar-brand h1 {
+    font-size: 1.25rem;
+  }
+}
+

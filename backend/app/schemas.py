@@ -8,6 +8,17 @@ class UserRegisterRequest(BaseModel):
     password: str = Field(..., min_length=1)
 
 
+class UserLoginRequest(BaseModel):
+    email: EmailStr
+    password: str = Field(..., min_length=1)
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    email: str
+
+
 class UserResponse(BaseModel):
     id: int
     email: str

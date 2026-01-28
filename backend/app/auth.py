@@ -5,8 +5,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .db import get_db
 from .models import User
-from .schemas import UserRegisterRequest, UserResponse
-from .security import hash_password, validate_password_strength
+from .schemas import TokenResponse, UserLoginRequest, UserRegisterRequest, UserResponse
+from .security import (
+    create_access_token,
+    hash_password,
+    validate_password_strength,
+    verify_password,
+)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -57,3 +62,31 @@ async def register(
         )
     
     return new_user
+
+
+@router.post("/login", response_model=TokenResponse)
+async def login(
+    user_data: UserLoginRequest,
+    db: AsyncSession = Depends(get_db)
+) -> TokenResponse:
+    """Login user and return JWT token."""
+    # Find user by email
+    result = await db.execute(
+        select(User).where(User.email == user_data.email)
+    )
+    user = result.scalar_one_or_none()
+    
+    # Check if user exists and password is correct
+    if not user or not verify_password(user_data.password, user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials"
+        )
+    
+    # Create access token
+    access_token = create_access_token(user.id, user.email)
+    
+    return TokenResponse(
+        access_token=access_token,
+        email=user.email
+    )
