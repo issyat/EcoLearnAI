@@ -3,7 +3,6 @@ name = "ecolearnai-backend"
 version = "0.1.0"
 description = "FastAPI backend for EcoLearnAI"
 authors = [{ name = "Your Name", email = "you@example.com" }]
-readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
   "fastapi>=0.115.0",
@@ -37,6 +36,10 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
+
+[tool.setuptools.packages.find]
+where = [""]
+include = ["app*"]
 
 [build-system]
 requires = ["setuptools>=68", "wheel"]
