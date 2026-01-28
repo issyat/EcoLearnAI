@@ -65,13 +65,18 @@ def build_lesson_prompt(
         "{\n"
         '  "lesson": "Your lesson content here...",\n'
         '  "actions": [\n'
-        '    {"title": "Action 1 Title", "description": "Brief description", "action_code": "action_code_1"},\n'
-        '    {"title": "Action 2 Title", "description": "Brief description", "action_code": "action_code_2"},\n'
-        '    {"title": "Action 3 Title", "description": "Brief description", "action_code": "action_code_3"}\n'
+        '    {"title": "Action 1", "description": "Brief desc", '
+        '"action_code": "code_1"},\n'
+        '    {"title": "Action 2", "description": "Brief desc", '
+        '"action_code": "code_2"},\n'
+        '    {"title": "Action 3", "description": "Brief desc", '
+        '"action_code": "code_3"}\n'
         "  ]\n"
         "}\n\n"
-        "ACTION CODES: For action_code, use one of: recycle_plastic, recycle_paper, public_transport, bike_commute, plant_tree, reduce_meat, led_bulb, reusable_bag\n"
-        "Choose the most appropriate code for each action based on the topic and action content."
+        "ACTION CODES: For action_code, use one of: recycle_plastic, "
+        "recycle_paper, public_transport, bike_commute, plant_tree, "
+        "reduce_meat, led_bulb, reusable_bag\n"
+        "Choose the most appropriate code based on the action content."
     )
 
     if previous_topics:
@@ -132,20 +137,34 @@ async def call_gpt_api(prompt: str) -> dict[str, Any]:
                 try:
                     return json.loads(content)
                 except json.JSONDecodeError:
-                    # If not JSON, treat the entire response as the lesson content
+                    # If not JSON, treat entire response as lesson content
                     return {
                         "lesson": content,
                         "actions": [
-                            {"title": "Learn More", "description": "Explore related topics", "action_code": "reduce_meat"},
-                            {"title": "Take Action", "description": "Apply these concepts", "action_code": "led_bulb"},
-                            {"title": "Share Knowledge", "description": "Teach others", "action_code": "bike_commute"}
+                            {
+                                "title": "Learn More",
+                                "description": "Explore related topics",
+                                "action_code": "reduce_meat"
+                            },
+                            {
+                                "title": "Take Action",
+                                "description": "Apply these concepts",
+                                "action_code": "led_bulb"
+                            },
+                            {
+                                "title": "Share Knowledge",
+                                "description": "Teach others",
+                                "action_code": "bike_commute"
+                            }
                         ]
                     }
             else:
                 raise LessonServiceError(f"Unexpected API response format: {data}")
                 
     except httpx.HTTPStatusError as e:
-        raise LessonServiceError(f"GPT API request failed: {e.response.status_code} - {e.response.text}")
+        raise LessonServiceError(
+            f"GPT API request failed: {e.response.status_code} - {e.response.text}"
+        )
     except httpx.RequestError as e:
         raise LessonServiceError(f"GPT API connection error: {str(e)}")
 

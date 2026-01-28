@@ -1,8 +1,8 @@
 """Carbon tracking endpoints for recording user actions."""
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from sqlalchemy import select, delete
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .carbon_service import (
