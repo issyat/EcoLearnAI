@@ -1,7 +1,8 @@
 """Tests for lesson endpoint (TDD approach)."""
+from unittest.mock import AsyncMock, patch
+
 import pytest
 from httpx import ASGITransport, AsyncClient
-from unittest.mock import AsyncMock, patch
 
 from app.main import app
 from app.schemas import LessonAction, LessonResponse
@@ -13,9 +14,18 @@ async def test_generate_lesson_success() -> None:
     mock_response = LessonResponse(
         lesson="Climate change is a critical environmental issue...",
         actions=[
-            LessonAction(title="Reduce energy consumption", description="Turn off lights when not in use"),
-            LessonAction(title="Use public transport", description="Reduce carbon footprint by using buses or trains"),
-            LessonAction(title="Plant trees", description="Participate in local tree planting initiatives")
+            LessonAction(
+                title="Reduce energy consumption",
+                description="Turn off lights when not in use"
+            ),
+            LessonAction(
+                title="Use public transport",
+                description="Reduce carbon footprint by using buses or trains"
+            ),
+            LessonAction(
+                title="Plant trees",
+                description="Participate in local tree planting initiatives"
+            )
         ],
         topic="climate change"
     )
@@ -43,9 +53,18 @@ async def test_generate_lesson_with_user_id() -> None:
     mock_response = LessonResponse(
         lesson="Building on your previous knowledge of recycling...",
         actions=[
-            LessonAction(title="Start composting", description="Turn organic waste into fertilizer"),
-            LessonAction(title="Buy local products", description="Support local farmers and reduce transport emissions"),
-            LessonAction(title="Reduce plastic use", description="Use reusable bags and containers")
+            LessonAction(
+                title="Start composting",
+                description="Turn organic waste into fertilizer"
+            ),
+            LessonAction(
+                title="Buy local products",
+                description="Support local farmers and reduce transport emissions"
+            ),
+            LessonAction(
+                title="Reduce plastic use",
+                description="Use reusable bags and containers"
+            )
         ],
         topic="sustainable living"
     )
@@ -118,4 +137,5 @@ async def test_generate_lesson_service_error() -> None:
             )
     
     assert response.status_code == 500
-    assert "error" in response.json()["detail"].lower() or "failed" in response.json()["detail"].lower()
+    detail = response.json()["detail"].lower()
+    assert "error" in detail or "failed" in detail

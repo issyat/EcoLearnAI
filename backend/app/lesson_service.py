@@ -48,31 +48,36 @@ async def save_lesson_history(
     await db.commit()
 
 
-def build_lesson_prompt(topic: str, previous_topics: list[str] | None = None) -> str:
+def build_lesson_prompt(
+    topic: str, previous_topics: list[str] | None = None
+) -> str:
     """Build the GPT prompt for lesson generation."""
-    base_prompt = f"""You are an expert ecology educator. Generate an educational lesson about: {topic}
-
-The lesson should:
-- Be clear, engaging, and informative
-- Focus on practical environmental impact
-- Be approximately 200-300 words
-- Be suitable for general audiences
-
-After the lesson, provide exactly 3 concrete actions users can take.
-
-Format your response as JSON:
-{{
-  "lesson": "Your lesson content here...",
-  "actions": [
-    {{"title": "Action 1 Title", "description": "Brief description"}},
-    {{"title": "Action 2 Title", "description": "Brief description"}},
-    {{"title": "Action 3 Title", "description": "Brief description"}}
-  ]
-}}"""
+    base_prompt = (
+        f"You are an expert ecology educator. "
+        f"Generate an educational lesson about: {topic}\n\n"
+        "The lesson should:\n"
+        "- Be clear, engaging, and informative\n"
+        "- Focus on practical environmental impact\n"
+        "- Be approximately 200-300 words\n"
+        "- Be suitable for general audiences\n\n"
+        "After the lesson, provide exactly 3 concrete actions users can take.\n\n"
+        "Format your response as JSON:\n"
+        "{\n"
+        '  "lesson": "Your lesson content here...",\n'
+        '  "actions": [\n'
+        '    {"title": "Action 1 Title", "description": "Brief description"},\n'
+        '    {"title": "Action 2 Title", "description": "Brief description"},\n'
+        '    {"title": "Action 3 Title", "description": "Brief description"}\n'
+        "  ]\n"
+        "}"
+    )
 
     if previous_topics:
         topics_str = ", ".join(previous_topics)
-        base_prompt += f"\n\nNote: This user has previously learned about: {topics_str}. Build on this knowledge if relevant."
+        base_prompt += (
+            f"\n\nNote: This user has previously learned about: {topics_str}. "
+            "Build on this knowledge if relevant."
+        )
     
     return base_prompt
 

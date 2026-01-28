@@ -2,8 +2,8 @@ from fastapi import FastAPI
 
 from .api import router as api_router
 from .auth import router as auth_router
-from .lessons import router as lessons_router
 from .config import get_settings
+from .lessons import router as lessons_router
 
 settings = get_settings()
 app = FastAPI(title=settings.project_name)
