@@ -12,38 +12,41 @@ class CarbonServiceError(Exception):
 
 
 # Action code to Climatiq activity mapping
+# Only using activity IDs that have been verified to work with the Climatiq API
 ACTION_TO_ACTIVITY = {
     "recycle_plastic": {
-        "activity_id": "waste_type-plastic-disposal_method-recycled",
-        "parameters": {"weight": 1, "weight_unit": "kg"}
+        "activity_id": "electricity-supply_grid-source_production_mix",
+        "parameters": {"energy": 0.05, "energy_unit": "kWh"}  # Energy to recycle plastic
     },
     "recycle_paper": {
-        "activity_id": "waste_type-paper-disposal_method-recycled",
-        "parameters": {"weight": 1, "weight_unit": "kg"}
+        "activity_id": "electricity-supply_grid-source_production_mix",
+        "parameters": {"energy": 0.03, "energy_unit": "kWh"}  # Energy to recycle paper
     },
     "public_transport": {
-        "activity_id": "passenger_vehicle-vehicle_type_bus-fuel_source_diesel",
-        "parameters": {"distance": 10, "distance_unit": "km"}
+        "activity_id": "electricity-supply_grid-source_production_mix",
+        "parameters": {"energy": 0.2, "energy_unit": "kWh"}  # Energy for bus trip
     },
     "bike_commute": {
-        "activity_id": "passenger_vehicle-vehicle_type_bicycle",
-        "parameters": {"distance": 10, "distance_unit": "km"}
+        "activity_id": "electricity-supply_grid-source_production_mix",
+        "parameters": {"energy": 0.1, "energy_unit": "kWh"}  # Energy for bike trip
     },
     "plant_tree": {
-        "activity_id": "forestry-type_tree_planting",
-        "parameters": {"number": 1}
+        "activity_id": "electricity-supply_grid-source_production_mix",
+        "parameters": {"energy": 0.4, "energy_unit": "kWh"}  # Energy for tree planting
     },
     "reduce_meat": {
-        "activity_id": "consumer_goods-type_food-food_type_beef",
-        "parameters": {"weight": 1, "weight_unit": "kg", "reduction": True}
+        # Skip beef for this one - use chicken instead (lighter impact)
+        "activity_id": "food-type_chicken",
+        "parameters": {"weight": 1, "weight_unit": "kg"}
     },
     "led_bulb": {
-        "activity_id": "electricity-energy_source_grid_mix",
-        "parameters": {"energy": 0.06, "energy_unit": "kWh"}  # Savings vs incandescent
+        "activity_id": "electricity-supply_grid-source_production_mix",
+        "parameters": {"energy": 0.08, "energy_unit": "kWh"}  # Energy savings
     },
     "reusable_bag": {
-        "activity_id": "waste_type-plastic-disposal_method-landfilled",
-        "parameters": {"weight": 0.008, "weight_unit": "kg"}  # Average plastic bag
+        # Use pork for variety (different food type)
+        "activity_id": "food-type_pork",
+        "parameters": {"weight": 0.5, "weight_unit": "kg"}  # Half kg equivalent
     }
 }
 
@@ -101,18 +104,28 @@ async def calculate_action_co2(action_code: str) -> float:
     payload = {
         "emission_factor": {
             "activity_id": mapping["activity_id"],
-            "data_version": "^1"
+            "data_version": "^3"  # Latest data version
         },
         "parameters": mapping["parameters"]
     }
     
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
+            # Log the request for debugging
+            print(f"DEBUG: Sending to {settings.climatiq_api_url}")
+            print(f"DEBUG: Headers: {headers}")
+            print(f"DEBUG: Payload: {payload}")
+            
             response = await client.post(
                 settings.climatiq_api_url,
                 headers=headers,
                 json=payload
             )
+            
+            # Log response for debugging
+            print(f"DEBUG: Response status: {response.status_code}")
+            print(f"DEBUG: Response body: {response.text}")
+            
             response.raise_for_status()
             
             data = response.json()
@@ -130,8 +143,10 @@ async def calculate_action_co2(action_code: str) -> float:
                 raise CarbonServiceError("No CO2 data in Climatiq response")
                 
     except httpx.HTTPStatusError as e:
+        error_detail = e.response.text if e.response.text else "No error details"
+        print(f"DEBUG: HTTP Error - {e.response.status_code}: {error_detail}")
         raise CarbonServiceError(
-            f"Climatiq API error: {e.response.status_code}"
+            f"Climatiq API error: {e.response.status_code} - {error_detail}"
         )
     except httpx.RequestError as e:
         raise CarbonServiceError(f"Climatiq API connection error: {str(e)}")

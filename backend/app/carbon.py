@@ -1,6 +1,8 @@
 """Carbon tracking endpoints for recording user actions."""
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from datetime import datetime, timedelta, timezone
+
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .carbon_service import (
@@ -89,3 +91,192 @@ async def record_action(
         trees_planted=trees,
         action_code=request.action_code
     )
+
+
+@router.get("/action-history")
+async def get_action_history(
+    user_id: int = Query(..., description="User ID"),
+    days: int = Query(30, description="Number of days to retrieve (default: 30)"),
+    db: AsyncSession = Depends(get_db)
+) -> dict:
+    """
+    Get user's action history for the past N days.
+    Useful for creating charts and graphs of environmental impact over time.
+    
+    - **user_id**: The user ID to retrieve history for
+    - **days**: Number of days to look back (default 30)
+    
+    Returns list of actions with timestamps and CO2 values.
+    """
+    # Verify user exists
+    result = await db.execute(
+        select(User).where(User.id == user_id)
+    )
+    user = result.scalar_one_or_none()
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    # Calculate date range
+    end_date = datetime.now(timezone.utc)
+    start_date = end_date - timedelta(days=days)
+    
+    # Get user actions in date range
+    result = await db.execute(
+        select(UserAction)
+        .where(
+            (UserAction.user_id == user_id) &
+            (UserAction.timestamp >= start_date) &
+            (UserAction.timestamp <= end_date)
+        )
+        .order_by(UserAction.timestamp.asc())
+    )
+    actions = result.scalars().all()
+    
+    # Get current footprint
+    footprint_result = await db.execute(
+        select(UserFootprint).where(UserFootprint.user_id == user_id)
+    )
+    footprint = footprint_result.scalar_one_or_none()
+    
+    # Format response for charts
+    return {
+        "user_id": user_id,
+        "date_range": {
+            "start": start_date.isoformat(),
+            "end": end_date.isoformat()
+        },
+        "actions": [
+            {
+                "id": action.id,
+                "action_code": action.action_code,
+                "co2_kg": action.co2_kg,
+                "timestamp": action.timestamp.isoformat()
+            }
+            for action in actions
+        ],
+        "summary": {
+            "total_actions": len(actions),
+            "total_co2_kg": sum(action.co2_kg for action in actions),
+            "cumulative_co2_kg": footprint.cumulative_co2_kg if footprint else 0,
+            "trees_planted": footprint.trees_planted if footprint else 0
+        }
+    }
+
+
+@router.get("/footprint/{user_id}")
+async def get_user_footprint(
+    user_id: int,
+    db: AsyncSession = Depends(get_db)
+) -> dict:
+    """
+    Get user's current environmental footprint stats.
+    
+    Returns cumulative CO2 saved and trees planted equivalent.
+    """
+    # Verify user exists
+    result = await db.execute(
+        select(User).where(User.id == user_id)
+    )
+    user = result.scalar_one_or_none()
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    # Get footprint
+    footprint_result = await db.execute(
+        select(UserFootprint).where(UserFootprint.user_id == user_id)
+    )
+    footprint = footprint_result.scalar_one_or_none()
+    
+    if not footprint:
+        return {
+            "user_id": user_id,
+            "cumulative_co2_kg": 0,
+            "trees_planted": 0,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }
+    
+    return {
+        "user_id": user_id,
+        "cumulative_co2_kg": footprint.cumulative_co2_kg,
+        "trees_planted": footprint.trees_planted,
+        "updated_at": footprint.updated_at.isoformat()
+    }
+
+
+@router.delete("/action/{action_id}")
+async def delete_action(
+    action_id: int,
+    user_id: int = Query(..., description="User ID to verify ownership"),
+    db: AsyncSession = Depends(get_db)
+) -> dict:
+    """
+    Delete a user action and update their footprint.
+    
+    - **action_id**: The action ID to delete
+    - **user_id**: The user ID to verify the action belongs to them
+    
+    Returns updated footprint stats.
+    """
+    # Get the action to delete
+    result = await db.execute(
+        select(UserAction).where(UserAction.id == action_id)
+    )
+    action = result.scalar_one_or_none()
+    
+    if not action:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Action not found"
+        )
+    
+    # Verify ownership
+    if action.user_id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You can only delete your own actions"
+        )
+    
+    # Get footprint before deletion
+    footprint_result = await db.execute(
+        select(UserFootprint).where(UserFootprint.user_id == user_id)
+    )
+    footprint = footprint_result.scalar_one_or_none()
+    
+    if not footprint:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User footprint not found"
+        )
+    
+    # Subtract the CO2 from footprint
+    footprint.cumulative_co2_kg = max(0, footprint.cumulative_co2_kg - action.co2_kg)
+    
+    # Recalculate trees
+    trees = calculate_trees_planted(footprint.cumulative_co2_kg)
+    footprint.trees_planted = trees
+    
+    # Delete the action
+    await db.delete(action)
+    
+    # Commit changes
+    await db.commit()
+    
+    return {
+        "user_id": user_id,
+        "action_deleted": {
+            "id": action.id,
+            "action_code": action.action_code,
+            "co2_kg": action.co2_kg
+        },
+        "cumulative_co2_kg": footprint.cumulative_co2_kg,
+        "trees_planted": footprint.trees_planted,
+        "updated_at": footprint.updated_at.isoformat()
+    }

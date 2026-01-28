@@ -33,8 +33,12 @@ export default function Login() {
       }
 
       const responseData = await response.json();
+      console.log('Login response:', responseData);
       localStorage.setItem('token', responseData.access_token);
       localStorage.setItem('email', responseData.email);
+      if (responseData.user_id) {
+        localStorage.setItem('userId', responseData.user_id.toString());
+      }
 
       setSuccessMessage('Connexion réussie! Redirection vers le dashboard...');
       

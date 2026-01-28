@@ -17,6 +17,7 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     email: str
+    user_id: int
 
 
 class UserResponse(BaseModel):
@@ -33,6 +34,7 @@ class LessonAction(BaseModel):
     """Single action recommendation for the user."""
     title: str = Field(..., description="Action title")
     description: str = Field(..., description="Action description")
+    action_code: str = Field(..., description="Action code for carbon calculation")
 
 
 class LessonRequest(BaseModel):
