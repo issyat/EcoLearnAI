@@ -28,7 +28,7 @@ class Settings(BaseSettings):
 
     # Climatiq API
     climatiq_api_key: str = ""
-    climatiq_api_url: str = "https://api.climatiq.io/data/v1/estimate"
+    climatiq_api_url: str = "https://api.climatiq.io/estimate"
 
     # Carbon calculation constants
     kg_co2_per_tree: float = 21.77  # Average CO2 absorbed per tree per year

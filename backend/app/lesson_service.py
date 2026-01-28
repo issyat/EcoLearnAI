@@ -65,11 +65,18 @@ def build_lesson_prompt(
         "{\n"
         '  "lesson": "Your lesson content here...",\n'
         '  "actions": [\n'
-        '    {"title": "Action 1 Title", "description": "Brief description"},\n'
-        '    {"title": "Action 2 Title", "description": "Brief description"},\n'
-        '    {"title": "Action 3 Title", "description": "Brief description"}\n'
+        '    {"title": "Action 1", "description": "Brief desc", '
+        '"action_code": "code_1"},\n'
+        '    {"title": "Action 2", "description": "Brief desc", '
+        '"action_code": "code_2"},\n'
+        '    {"title": "Action 3", "description": "Brief desc", '
+        '"action_code": "code_3"}\n'
         "  ]\n"
-        "}"
+        "}\n\n"
+        "ACTION CODES: For action_code, use one of: recycle_plastic, "
+        "recycle_paper, public_transport, bike_commute, plant_tree, "
+        "reduce_meat, led_bulb, reusable_bag\n"
+        "Choose the most appropriate code based on the action content."
     )
 
     if previous_topics:
@@ -98,7 +105,7 @@ async def call_gpt_api(prompt: str) -> dict[str, Any]:
         "messages": [
             {
                 "role": "system",
-                "content": "You are an expert ecology educator. Always respond with valid JSON."
+                "content": "You are an expert ecology educator."
             },
             {
                 "role": "user",
@@ -106,8 +113,6 @@ async def call_gpt_api(prompt: str) -> dict[str, Any]:
             }
         ],
         "temperature": 0.7,
-        "stream": False,
-        "max_tokens": 1000
     }
     
     try:
@@ -125,17 +130,43 @@ async def call_gpt_api(prompt: str) -> dict[str, Any]:
             # The API returns: {"choices": [{"message": {"content": "..."}}]}
             if "choices" in data and len(data["choices"]) > 0:
                 content = data["choices"][0]["message"]["content"]
-                # Parse the JSON content
-                return json.loads(content)
+                if not content or not content.strip():
+                    raise LessonServiceError("GPT API returned empty content")
+                
+                # Try to parse as JSON first (if it's properly formatted)
+                try:
+                    return json.loads(content)
+                except json.JSONDecodeError:
+                    # If not JSON, treat entire response as lesson content
+                    return {
+                        "lesson": content,
+                        "actions": [
+                            {
+                                "title": "Learn More",
+                                "description": "Explore related topics",
+                                "action_code": "reduce_meat"
+                            },
+                            {
+                                "title": "Take Action",
+                                "description": "Apply these concepts",
+                                "action_code": "led_bulb"
+                            },
+                            {
+                                "title": "Share Knowledge",
+                                "description": "Teach others",
+                                "action_code": "bike_commute"
+                            }
+                        ]
+                    }
             else:
-                raise LessonServiceError("Unexpected API response format")
+                raise LessonServiceError(f"Unexpected API response format: {data}")
                 
     except httpx.HTTPStatusError as e:
-        raise LessonServiceError(f"GPT API request failed: {e.response.status_code}")
+        raise LessonServiceError(
+            f"GPT API request failed: {e.response.status_code} - {e.response.text}"
+        )
     except httpx.RequestError as e:
         raise LessonServiceError(f"GPT API connection error: {str(e)}")
-    except json.JSONDecodeError as e:
-        raise LessonServiceError(f"Failed to parse GPT response as JSON: {str(e)}")
 
 
 async def generate_lesson(
@@ -179,7 +210,8 @@ async def generate_lesson(
     actions = [
         LessonAction(
             title=action["title"],
-            description=action["description"]
+            description=action["description"],
+            action_code=action.get("action_code", "reduce_meat")  # Default fallback
         )
         for action in gpt_response["actions"]
     ]

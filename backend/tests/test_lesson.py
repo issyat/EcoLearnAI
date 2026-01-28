@@ -16,15 +16,18 @@ async def test_generate_lesson_success() -> None:
         actions=[
             LessonAction(
                 title="Reduce energy consumption",
-                description="Turn off lights when not in use"
+                description="Turn off lights when not in use",
+                action_code="led_bulb"
             ),
             LessonAction(
                 title="Use public transport",
-                description="Reduce carbon footprint by using buses or trains"
+                description="Reduce carbon footprint by using buses or trains",
+                action_code="public_transport"
             ),
             LessonAction(
                 title="Plant trees",
-                description="Participate in local tree planting initiatives"
+                description="Participate in local tree planting initiatives",
+                action_code="plant_tree"
             )
         ],
         topic="climate change"
@@ -55,15 +58,18 @@ async def test_generate_lesson_with_user_id() -> None:
         actions=[
             LessonAction(
                 title="Start composting",
-                description="Turn organic waste into fertilizer"
+                description="Turn organic waste into fertilizer",
+                action_code="reduce_meat"
             ),
             LessonAction(
                 title="Buy local products",
-                description="Support local farmers and reduce transport emissions"
+                description="Support local farmers and reduce transport emissions",
+                action_code="bike_commute"
             ),
             LessonAction(
                 title="Reduce plastic use",
-                description="Use reusable bags and containers"
+                description="Use reusable bags and containers",
+                action_code="reusable_bag"
             )
         ],
         topic="sustainable living"
