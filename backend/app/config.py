@@ -12,8 +12,13 @@ class Settings(BaseSettings):
     postgres_user: str = "postgres"
     postgres_password: str = "postgres"
     postgres_db: str = "ecolearnai"
-    postgres_host: str = "db"
+    postgres_host: str = "localhost"
     postgres_port: int = 5432
+
+    # JWT
+    secret_key: str = "your-secret-key-change-in-production"
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
 
     @property
     def database_url(self) -> str:
