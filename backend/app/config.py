@@ -20,6 +20,10 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
 
+    # GPT API
+    gpt_api_key: str = ""
+    gpt_api_url: str = "https://api.dat1.co/api/v1/collection/gpt-120-oss/invoke-chat"
+
     @property
     def database_url(self) -> str:
         return (
