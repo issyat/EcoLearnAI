@@ -19,7 +19,7 @@ export default function Signup() {
 
     try {
       // Appel API au backend
-      const response = await fetch('/api/v1/auth/signup', {
+      const response = await fetch('/api/v1/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -32,9 +32,10 @@ export default function Signup() {
         throw new Error(errorData.detail || 'Une erreur est survenue');
       }
 
-       const responseData = await response.json();
-      localStorage.setItem('token', responseData.token);
-      localStorage.setItem('email', responseData.email);
+      const responseData = await response.json();
+      // Store user data
+      localStorage.setItem('userId', responseData.id);
+      localStorage.setItem('userEmail', responseData.email);
 
       setSuccessMessage('Inscription réussie! Redirection vers le dashboard...');
       
