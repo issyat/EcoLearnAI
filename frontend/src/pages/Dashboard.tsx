@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/dashboard.css';
 
 interface Lesson {
@@ -30,6 +31,7 @@ const TOPICS = [
 ];
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [selectedTopic, setSelectedTopic] = useState<string>('');
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(false);
@@ -253,11 +255,17 @@ export default function Dashboard() {
           Déconnexion
         </button>
         <button 
+          onClick={() => navigate('/stats')} 
+          className="stats-nav-btn"
+        >
+          📊 Statistiques
+        </button>
+        <button 
           onClick={handleViewHistory} 
           className="history-btn"
           disabled={historyLoading}
         >
-          {historyLoading ? '⏳ Chargement...' : '📊 Historique'}
+          {historyLoading ? '⏳ Chargement...' : '📋 Historique'}
         </button>
       </nav>
 
