@@ -29,7 +29,7 @@ export default function Signup() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.detail || 'Une erreur est survenue');
+        throw new Error(errorData.detail || 'An error occurred');
       }
 
       const responseData = await response.json();
@@ -37,14 +37,14 @@ export default function Signup() {
       localStorage.setItem('userId', responseData.id);
       localStorage.setItem('userEmail', responseData.email);
 
-      setSuccessMessage('Inscription réussie! Redirection vers le dashboard...');
+      setSuccessMessage('Registration successful! Redirecting to dashboard...');
       
       // Redirection après 2 secondes
       setTimeout(() => {
         window.location.href = '/dashboard';
       }, 2000);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Une erreur est survenue';
+      const message = error instanceof Error ? error.message : 'An error occurred';
       setErrorMessage(message);
     } finally {
       setLoading(false);
@@ -58,10 +58,10 @@ export default function Signup() {
         <div className="signup-sidebar">
           <div className="sidebar-content">
             <h2 className="sidebar-title">EcoLearnAI</h2>
-            <p className="sidebar-subtitle">Apprendre l'écologie autrement</p>
+            <p className="sidebar-subtitle">Learn ecology differently</p>
             <div className="eco-icon">🌱</div>
             <p className="sidebar-description">
-              Rejoignez notre communauté et apprenez à agir concrètement pour la planète grâce à l’IA.
+              Join our community and learn to take concrete action for the planet thanks to AI.
             </p>
           </div>
         </div>
@@ -69,9 +69,9 @@ export default function Signup() {
         {/* Formulaire d'inscription */}
         <div className="signup-form-section">
           <div className="form-wrapper">
-            <h1 className="form-title">Créer un compte</h1>
+            <h1 className="form-title">Create an account</h1>
             <p className="form-subtitle">
-              Déjà inscrit? <a href="/login" className="login-link">Se connecter</a>
+              Already registered? <a href="/login" className="login-link">Log In</a>
             </p>
 
             {errorMessage && (
@@ -87,16 +87,6 @@ export default function Signup() {
             )}
 
             <SignupForm onSubmit={handleSignup} loading={loading} />
-
-            <div className="divider">
-              <span>ou</span>
-            </div>
-
-            <p className="terms-text">
-              En vous inscrivant, vous acceptez nos{' '}
-              <a href="#" className="terms-link">conditions d'utilisation</a> et notre{' '}
-              <a href="#" className="terms-link">politique de confidentialité</a>.
-            </p>
           </div>
         </div>
       </div>

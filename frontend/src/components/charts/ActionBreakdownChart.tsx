@@ -12,14 +12,14 @@ interface ActionBreakdownChartProps {
 }
 
 const ACTION_LABELS: Record<string, string> = {
-  recycle_plastic: '♻️ Recyclage plastique',
-  recycle_paper: '📄 Recyclage papier',
-  public_transport: '🚌 Transport public',
-  bike_commute: '🚴 Vélo',
-  plant_tree: '🌱 Planter un arbre',
-  reduce_meat: '🥗 Réduire viande',
-  led_bulb: '💡 Ampoules LED',
-  reusable_bag: '🛍️ Sacs réutilisables'
+  recycle_plastic: '♻️ Plastic Recycling',
+  recycle_paper: '📄 Paper Recycling',
+  public_transport: '🚌 Public Transport',
+  bike_commute: '🚴 Bike',
+  plant_tree: '🌱 Plant a tree',
+  reduce_meat: '🥗 Reduce meat',
+  led_bulb: '💡 LED Bulbs',
+  reusable_bag: '🛍️ Reusable bags'
 };
 
 const ACTION_COLORS: Record<string, string> = {
@@ -32,6 +32,7 @@ const ACTION_COLORS: Record<string, string> = {
   led_bulb: '#eab308',
   reusable_bag: '#06b6d4'
 };
+
 
 export default function ActionBreakdownChart({ data }: ActionBreakdownChartProps) {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -66,10 +67,13 @@ export default function ActionBreakdownChart({ data }: ActionBreakdownChartProps
     // Create SVG
     const svg = d3
       .select(svgRef.current)
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
+      .attr('viewBox', `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .style('width', '100%')
+      .style('height', 'auto')
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
+
 
     // Bars
     svg
@@ -145,15 +149,17 @@ export default function ActionBreakdownChart({ data }: ActionBreakdownChartProps
       .attr('text-anchor', 'end')
       .attr('dx', '-0.5em')
       .attr('dy', '0.5em')
-      .attr('fill', '#6b7280')
-      .attr('font-size', '11px')
+      .style('fill', '#6b7280')
+      .style('font-size', '11px')
+      .style('font-family', 'Inter, system-ui, sans-serif')
       .text(d => ACTION_LABELS[d.action_code] || d.action_code);
 
     // Y Axis
     svg
       .append('g')
       .call(d3.axisLeft(yScale).ticks(6))
-      .style('color', '#6b7280');
+      .style('color', '#6b7280')
+      .style('font-family', 'Inter, system-ui, sans-serif');
 
     // Y Axis Label
     svg
@@ -165,13 +171,14 @@ export default function ActionBreakdownChart({ data }: ActionBreakdownChartProps
       .style('text-anchor', 'middle')
       .style('fill', '#6b7280')
       .style('font-size', '12px')
-      .text('CO₂ Total (kg)');
+      .style('font-family', 'Inter, system-ui, sans-serif')
+      .text('Total CO₂ (kg)');
 
   }, [data]);
 
   return (
     <div className="chart-container">
-      <h3 className="chart-title">Impact par type d'action</h3>
+      <h3 className="chart-title">Impact by action type</h3>
       <svg ref={svgRef}></svg>
     </div>
   );

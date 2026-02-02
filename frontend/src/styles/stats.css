@@ -1,7 +1,38 @@
+/* ============================================
+   STATS STYLES - FUTURISTIC THEME
+   Glassmorphism & Data Viz
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --primary-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  --secondary-gradient: linear-gradient(135deg, #3b82f6 0%, #2dd4bf 100%);
+  --surface-glass: rgba(255, 255, 255, 0.75);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+  
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  --radius-lg: 24px;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
 .stats-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  background-color: #f3f4f6;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.1) 0px, transparent 50%);
+  background-attachment: fixed;
   padding: 2rem;
+  color: var(--text-primary);
 }
 
 .stats-header {
@@ -16,28 +47,34 @@
   top: 0;
   padding: 0.75rem 1.5rem;
   background: white;
-  border: 2px solid #10b981;
-  color: #10b981;
-  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.1);
+  color: var(--text-primary);
+  border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .back-btn:hover {
-  background: #10b981;
-  color: white;
   transform: translateX(-5px);
+  background: var(--text-primary);
+  color: white;
+  box-shadow: var(--shadow-lg);
 }
 
 .stats-title {
   font-size: 2.5rem;
-  color: #1f2937;
+  font-weight: 800;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
+  letter-spacing: -1px;
 }
 
 .stats-subtitle {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 1.1rem;
 }
 
@@ -46,32 +83,39 @@
   margin: 0 auto;
 }
 
+/* ============================================
+   STATS CARDS
+   ============================================ */
+
 .stats-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.5rem;
   margin-bottom: 3rem;
 }
 
 .stat-card {
-  background: white;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  border: var(--glass-border);
   padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
   display: flex;
   align-items: center;
-  gap: 1rem;
-  transition: transform 0.3s, box-shadow 0.3s;
+  gap: 1.5rem;
+  transition: transform 0.3s ease;
 }
 
 .stat-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 12px rgba(16, 185, 129, 0.2);
+  transform: translateY(-8px);
+  background: white;
 }
 
 .stat-icon {
   font-size: 3rem;
   flex-shrink: 0;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
 }
 
 .stat-content {
@@ -80,29 +124,58 @@
 
 .stat-value {
   font-size: 2rem;
-  font-weight: bold;
-  color: #10b981;
+  font-weight: 800;
+  color: var(--text-primary);
   line-height: 1.2;
 }
 
 .stat-label {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   margin-top: 0.25rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
+
+/* ============================================
+   CHARTS SECTION
+   ============================================ */
 
 .charts-section {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 1.5rem;
   margin-bottom: 3rem;
 }
 
+@media (max-width: 768px) {
+  .charts-section {
+    grid-template-columns: 1fr;
+  }
+}
+
 .chart-wrapper {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  padding: 1.5rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  min-height: 400px;
+}
+
+.chart-wrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.85);
 }
 
 .chart-wrapper.full-width {
@@ -111,34 +184,42 @@
 
 .chart-container {
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .chart-title {
-  font-size: 1.5rem;
-  color: #1f2937;
-  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
   text-align: center;
   font-weight: 600;
 }
 
 .tree-info {
   margin-top: 1.5rem;
-  padding: 1rem;
-  background: #f0fdf4;
-  border-radius: 8px;
+  padding: 1.5rem;
+  background: rgba(240, 253, 244, 0.6);
+  border-radius: 16px;
   text-align: center;
+  border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .tree-info-text {
-  color: #047857;
-  font-size: 0.9rem;
+  color: #065f46;
+  font-size: 0.95rem;
   margin: 0.5rem 0;
+  font-weight: 500;
 }
 
 .no-data {
   text-align: center;
   padding: 3rem 1rem;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .no-data p {
@@ -151,17 +232,24 @@
   color: #9ca3af;
 }
 
+/* ============================================
+   INSIGHTS
+   ============================================ */
+
 .insights-section {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  padding: 2.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: var(--glass-border);
 }
 
 .insights-title {
   font-size: 1.8rem;
-  color: #1f2937;
-  margin-bottom: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
   text-align: center;
 }
 
@@ -174,48 +262,67 @@
 .insight-card {
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
-  padding: 1rem;
-  background: #f9fafb;
-  border-radius: 8px;
-  border-left: 4px solid #10b981;
-  transition: transform 0.2s;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.insight-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: var(--primary-gradient);
 }
 
 .insight-card:hover {
-  transform: translateX(5px);
-  background: #f0fdf4;
+  transform: translateX(8px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
 .insight-icon {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   flex-shrink: 0;
+  background: #ecfdf5;
+  padding: 10px;
+  border-radius: 12px;
 }
 
 .insight-text {
-  color: #374151;
+  color: var(--text-secondary);
   line-height: 1.6;
+  font-size: 1.05rem;
 }
 
 .insight-text strong {
-  color: #10b981;
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .loading {
   text-align: center;
   padding: 4rem;
   font-size: 1.2rem;
-  color: #6b7280;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .error {
   text-align: center;
   padding: 2rem;
   font-size: 1.1rem;
-  color: #ef4444;
-  background: #fee;
-  border-radius: 8px;
+  color: #991b1b;
+  background: #fee2e2;
+  border-radius: 12px;
   margin-bottom: 1rem;
+  border: 1px solid #fecaca;
 }
 
 /* Responsive Design */
@@ -231,6 +338,8 @@
   .back-btn {
     position: static;
     margin-bottom: 1rem;
+    width: 100%;
+    text-align: center;
   }
 
   .stats-cards {
@@ -242,7 +351,7 @@
   }
 
   .chart-wrapper {
-    padding: 1rem;
+    padding: 1.5rem;
   }
 
   .stat-value {

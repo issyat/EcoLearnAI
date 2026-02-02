@@ -50,10 +50,13 @@ export default function CO2TimelineChart({ data }: CO2TimelineChartProps) {
     // Create SVG
     const svg = d3
       .select(svgRef.current)
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
+      .attr('viewBox', `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .style('width', '100%')
+      .style('height', 'auto')
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
+
 
     // Add gradient
     const gradient = svg
@@ -134,6 +137,7 @@ export default function CO2TimelineChart({ data }: CO2TimelineChartProps) {
           .attr('y', -12)
           .attr('fill', '#fff')
           .attr('font-size', '12px')
+          .style('font-family', 'Inter, system-ui, sans-serif')
           .text(`${d.co2_kg.toFixed(2)} kg CO₂`);
       })
       .on('mouseleave', function () {
@@ -146,13 +150,15 @@ export default function CO2TimelineChart({ data }: CO2TimelineChartProps) {
       .append('g')
       .attr('transform', `translate(0,${height})`)
       .call(d3.axisBottom(xScale).ticks(5))
-      .style('color', '#6b7280');
+      .style('color', '#6b7280')
+      .style('font-family', 'Inter, system-ui, sans-serif');
 
     // Y Axis
     svg
       .append('g')
       .call(d3.axisLeft(yScale).ticks(5))
-      .style('color', '#6b7280');
+      .style('color', '#6b7280')
+      .style('font-family', 'Inter, system-ui, sans-serif');
 
     // Y Axis Label
     svg
@@ -164,13 +170,14 @@ export default function CO2TimelineChart({ data }: CO2TimelineChartProps) {
       .style('text-anchor', 'middle')
       .style('fill', '#6b7280')
       .style('font-size', '12px')
+      .style('font-family', 'Inter, system-ui, sans-serif')
       .text('CO₂ (kg)');
 
   }, [data]);
 
   return (
     <div className="chart-container">
-      <h3 className="chart-title">Évolution de votre empreinte carbone</h3>
+      <h3 className="chart-title">Carbon Footprint Evolution</h3>
       <svg ref={svgRef}></svg>
     </div>
   );

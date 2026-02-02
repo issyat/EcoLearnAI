@@ -29,7 +29,7 @@ export default function Login() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.detail || 'Identifiants invalides');
+        throw new Error(errorData.detail || 'Invalid credentials');
       }
 
       const responseData = await response.json();
@@ -40,14 +40,14 @@ export default function Login() {
         localStorage.setItem('userId', responseData.user_id.toString());
       }
 
-      setSuccessMessage('Connexion réussie! Redirection vers le dashboard...');
+      setSuccessMessage('Login successful! Redirecting to dashboard...');
       
       // Redirection après 1 seconde
       setTimeout(() => {
         window.location.href = '/dashboard';
       }, 1000);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Une erreur est survenue';
+      const message = error instanceof Error ? error.message : 'An error occurred';
       setErrorMessage(message);
     } finally {
       setLoading(false);
@@ -61,10 +61,10 @@ export default function Login() {
         <div className="login-sidebar">
           <div className="sidebar-content">
             <h2 className="sidebar-title">EcoLearnAI</h2>
-            <p className="sidebar-subtitle">Apprendre l'écologie autrement</p>
+            <p className="sidebar-subtitle">Learn ecology differently</p>
             <div className="eco-icon">🌱</div>
             <p className="sidebar-description">
-              Connectez-vous et continuez votre apprentissage écologique avec l'IA.
+              Log in and continue your ecological learning with AI.
             </p>
           </div>
         </div>
@@ -72,9 +72,9 @@ export default function Login() {
         {/* Formulaire de connexion */}
         <div className="login-form-section">
           <div className="form-wrapper">
-            <h1 className="form-title">Se connecter</h1>
+            <h1 className="form-title">Log In</h1>
             <p className="form-subtitle">
-              Pas encore inscrit? <a href="/signup" className="signup-link">Créer un compte</a>
+              Not registered yet? <a href="/signup" className="signup-link">Create an account</a>
             </p>
 
             {errorMessage && (
@@ -90,14 +90,6 @@ export default function Login() {
             )}
 
             <LoginForm onSubmit={handleLogin} loading={loading} />
-
-            <div className="divider">
-              <span>ou</span>
-            </div>
-
-            <p className="security-text">
-              🔒 Nous ne partageons jamais votre mot de passe. Vos données sont sécurisées.
-            </p>
           </div>
         </div>
       </div>
