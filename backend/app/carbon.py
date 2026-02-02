@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import select
+from sqlalchemy import select, func, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .carbon_service import (
@@ -91,6 +91,53 @@ async def record_action(
         trees_planted=trees,
         action_code=request.action_code
     )
+
+
+@router.get("/history", response_model=dict)
+async def get_paginated_history(
+    user_id: int = Query(..., description="User ID"),
+    page: int = Query(1, ge=1, description="Page number"),
+    limit: int = Query(5, ge=1, le=50, description="Items per page"),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Get paginated action history for a user.
+    """
+    # Verify user exists
+    result = await db.execute(select(User).where(User.id == user_id))
+    if not result.scalar_one_or_none():
+         raise HTTPException(status_code=404, detail="User not found")
+
+    # Get total count
+    count_query = select(func.count(UserAction.id)).where(UserAction.user_id == user_id)
+    count_result = await db.execute(count_query)
+    total_count = count_result.scalar_one()
+
+    # Get items
+    query = (
+        select(UserAction)
+        .where(UserAction.user_id == user_id)
+        .order_by(desc(UserAction.timestamp))
+        .offset((page - 1) * limit)
+        .limit(limit)
+    )
+    result = await db.execute(query)
+    actions = result.scalars().all()
+
+    return {
+        "items": [
+            {
+                "id": a.id,
+                "action_code": a.action_code,
+                "co2_kg": a.co2_kg,
+                "timestamp": a.timestamp
+            } for a in actions
+        ],
+        "total": total_count,
+        "page": page,
+        "limit": limit,
+        "pages": (total_count + limit - 1) // limit
+    }
 
 
 @router.get("/action-history")

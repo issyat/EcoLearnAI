@@ -23,15 +23,15 @@ export default function SignupForm({ onSubmit, loading = false }: SignupFormProp
     const newErrors: Partial<SignupData> = {};
 
     if (!formData.email.trim()) {
-      newErrors.email = 'L\'email est requis';
+      newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Veuillez entrer un email valide';
+      newErrors.email = 'Please enter a valid email';
     }
 
     if (!formData.password) {
-      newErrors.password = 'Le mot de passe est requis';
+      newErrors.password = 'Password is required';
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Le mot de passe doit contenir au moins 8 caractères';
+      newErrors.password = 'Password must be at least 8 characters long';
     }
 
     setErrors(newErrors);
@@ -71,7 +71,7 @@ export default function SignupForm({ onSubmit, loading = false }: SignupFormProp
     <form className="signup-form" onSubmit={handleSubmit}>
       <div className="form-group">
         <label htmlFor="email" className="form-label">
-          Adresse Email
+          Email Address
         </label>
         <input
           type="email"
@@ -80,7 +80,7 @@ export default function SignupForm({ onSubmit, loading = false }: SignupFormProp
           className={`form-input ${errors.email ? 'input-error' : ''}`}
           value={formData.email}
           onChange={handleChange}
-          placeholder="votre.email@exemple.com"
+          placeholder="your.email@example.com"
           disabled={loading}
         />
         {errors.email && <span className="error-message">{errors.email}</span>}
@@ -88,7 +88,7 @@ export default function SignupForm({ onSubmit, loading = false }: SignupFormProp
 
       <div className="form-group">
         <label htmlFor="password" className="form-label">
-          Mot de Passe
+          Password
         </label>
         <div className="password-input-wrapper">
           <input
@@ -118,7 +118,7 @@ export default function SignupForm({ onSubmit, loading = false }: SignupFormProp
         className="submit-button"
         disabled={loading}
       >
-        {loading ? 'Inscription en cours...' : 'S\'inscrire'}
+        {loading ? 'Signing up...' : 'Sign Up'}
       </button>
     </form>
   );

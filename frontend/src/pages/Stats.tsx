@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CO2TimelineChart from '../components/charts/CO2TimelineChart';
 import ActionBreakdownChart from '../components/charts/ActionBreakdownChart';
@@ -106,17 +106,17 @@ export default function Stats() {
     }));
   };
 
-  const prepareTimelineData = () => {
+  const timelineData = useMemo(() => {
     return actionHistory.map(action => ({
       date: action.timestamp,
       co2_kg: action.co2_kg
     }));
-  };
+  }, [actionHistory]);
 
   if (loading) {
     return (
       <div className="stats-container">
-        <div className="loading">Chargement des statistiques...</div>
+        <div className="loading">Loading statistics...</div>
       </div>
     );
   }
@@ -126,7 +126,7 @@ export default function Stats() {
       <div className="stats-container">
         <div className="error">{error}</div>
         <button className="back-btn" onClick={() => navigate('/dashboard')}>
-          Retour au Dashboard
+          Back to Dashboard
         </button>
       </div>
     );
@@ -136,11 +136,11 @@ export default function Stats() {
     <div className="stats-container">
       <header className="stats-header">
         <button className="back-btn" onClick={() => navigate('/dashboard')}>
-          ← Retour
+          ← Back
         </button>
-        <h1 className="stats-title">📊 Statistiques Environnementales</h1>
+        <h1 className="stats-title">📊 Environmental Statistics</h1>
         <p className="stats-subtitle">
-          Visualisez votre impact écologique et suivez vos progrès
+          Visualize your ecological impact and track your progress
         </p>
       </header>
 
@@ -151,7 +151,7 @@ export default function Stats() {
             <div className="stat-icon">🌍</div>
             <div className="stat-content">
               <div className="stat-value">{footprint?.cumulative_co2_kg.toFixed(2) || 0} kg</div>
-              <div className="stat-label">CO₂ Compensé</div>
+              <div className="stat-label">CO₂ Offset</div>
             </div>
           </div>
 
@@ -159,7 +159,7 @@ export default function Stats() {
             <div className="stat-icon">🌲</div>
             <div className="stat-content">
               <div className="stat-value">{Math.floor(footprint?.trees_planted || 0)}</div>
-              <div className="stat-label">Arbres Plantés</div>
+              <div className="stat-label">Trees Planted</div>
             </div>
           </div>
 
@@ -167,7 +167,7 @@ export default function Stats() {
             <div className="stat-icon">✅</div>
             <div className="stat-content">
               <div className="stat-value">{actionHistory.length}</div>
-              <div className="stat-label">Actions Réalisées</div>
+              <div className="stat-label">Actions Completed</div>
             </div>
           </div>
 
@@ -179,7 +179,7 @@ export default function Stats() {
                   ? (footprint!.cumulative_co2_kg / actionHistory.length).toFixed(2)
                   : 0} kg
               </div>
-              <div className="stat-label">Moyenne/Action</div>
+              <div className="stat-label">Average/Action</div>
             </div>
           </div>
         </div>
@@ -199,11 +199,11 @@ export default function Stats() {
           {/* Timeline Chart */}
           <div className="chart-wrapper">
             {actionHistory.length > 0 ? (
-              <CO2TimelineChart data={prepareTimelineData()} />
+              <CO2TimelineChart data={timelineData} />
             ) : (
               <div className="no-data">
-                <p>Aucune donnée temporelle disponible</p>
-                <p className="no-data-subtitle">Commencez à enregistrer des actions pour voir votre évolution</p>
+                <p>No timeline data available</p>
+                <p className="no-data-subtitle">Start recording actions to see your progress</p>
               </div>
             )}
           </div>
@@ -214,8 +214,8 @@ export default function Stats() {
               <ActionBreakdownChart data={actionBreakdown} />
             ) : (
               <div className="no-data">
-                <p>Aucune donnée d'action disponible</p>
-                <p className="no-data-subtitle">Effectuez des actions écologiques pour voir leur impact</p>
+                <p>No action data available</p>
+                <p className="no-data-subtitle">Perform eco-actions to see their impact</p>
               </div>
             )}
           </div>
@@ -229,8 +229,8 @@ export default function Stats() {
               <div className="insight-card">
                 <span className="insight-icon">🏆</span>
                 <div className="insight-text">
-                  <strong>Action la plus impactante:</strong>{' '}
-                  {actionBreakdown[0]?.action_code.replace(/_/g, ' ')} avec{' '}
+                  <strong>Most impactful action:</strong>{' '}
+                  {actionBreakdown[0]?.action_code.replace(/_/g, ' ')} with{' '}
                   {actionBreakdown[0]?.total_co2.toFixed(2)} kg CO₂
                 </div>
               </div>
@@ -240,8 +240,8 @@ export default function Stats() {
               <div className="insight-card">
                 <span className="insight-icon">🌟</span>
                 <div className="insight-text">
-                  Félicitations! Vous avez planté {Math.floor(footprint.trees_planted)} arbres.
-                  C'est environ {(footprint.trees_planted * 20).toFixed(0)} kg de CO₂ absorbé par an!
+                  Congratulations! You have planted {Math.floor(footprint.trees_planted)} trees.
+                  That is about {(footprint.trees_planted * 20).toFixed(0)} kg of CO₂ absorbed per year!
                 </div>
               </div>
             )}
@@ -250,8 +250,8 @@ export default function Stats() {
               <div className="insight-card">
                 <span className="insight-icon">🎯</span>
                 <div className="insight-text">
-                  Vous avez réalisé {actionHistory.length} actions éco-responsables.
-                  Continuez sur cette lancée!
+                  You have completed {actionHistory.length} eco-friendly actions.
+                  Keep up the momentum!
                 </div>
               </div>
             )}
@@ -260,7 +260,7 @@ export default function Stats() {
               <div className="insight-card">
                 <span className="insight-icon">🚀</span>
                 <div className="insight-text">
-                  Commencez votre parcours écologique! Générez une leçon et réalisez vos premières actions.
+                  Start your ecological journey! Generate a lesson and perform your first actions.
                 </div>
               </div>
             )}

@@ -22,8 +22,10 @@ export default function TreesPlantedVisualization({ treesPlanted, totalCO2 }: Tr
 
     const svg = d3
       .select(svgRef.current)
-      .attr('width', width)
-      .attr('height', height);
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .style('width', '100%')
+      .style('height', 'auto');
 
     // Progress circle
     const radius = 120;
@@ -95,8 +97,8 @@ export default function TreesPlantedVisualization({ treesPlanted, totalCO2 }: Tr
       // Animate tree appearance
       tree
         .transition()
-        .delay(i * 100)
-        .duration(500)
+        .delay(i * 50) // Faster animation (was 100)
+        .duration(400) // Snappier duration (was 500)
         .attr('opacity', 1)
         .attr('font-size', '28px')
         .transition()
@@ -117,6 +119,7 @@ export default function TreesPlantedVisualization({ treesPlanted, totalCO2 }: Tr
       .attr('font-size', '48px')
       .attr('font-weight', 'bold')
       .attr('fill', '#10b981')
+      .style('font-family', 'Inter, system-ui, sans-serif')
       .text('0')
       .transition()
       .duration(1500)
@@ -133,7 +136,8 @@ export default function TreesPlantedVisualization({ treesPlanted, totalCO2 }: Tr
       .attr('y', 10)
       .attr('font-size', '16px')
       .attr('fill', '#6b7280')
-      .text('arbres plantés');
+      .style('font-family', 'Inter, system-ui, sans-serif')
+      .text('trees planted');
 
     // CO2 offset
     statsGroup
@@ -142,7 +146,8 @@ export default function TreesPlantedVisualization({ treesPlanted, totalCO2 }: Tr
       .attr('y', 40)
       .attr('font-size', '14px')
       .attr('fill', '#9ca3af')
-      .text(`${totalCO2.toFixed(1)} kg CO₂ compensé`);
+      .style('font-family', 'Inter, system-ui, sans-serif')
+      .text(`${totalCO2.toFixed(1)} kg CO₂ offset`);
 
     // Goal progress text
     statsGroup
@@ -151,22 +156,23 @@ export default function TreesPlantedVisualization({ treesPlanted, totalCO2 }: Tr
       .attr('y', 65)
       .attr('font-size', '12px')
       .attr('fill', '#10b981')
-      .text(`${(progress * 100).toFixed(0)}% de l'objectif`);
+      .style('font-family', 'Inter, system-ui, sans-serif')
+      .text(`${(progress * 100).toFixed(0)}% of goal`);
 
   }, [treesPlanted, totalCO2]);
 
   return (
     <div className="chart-container">
-      <h3 className="chart-title">🌳 Arbres Plantés</h3>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <h3 className="chart-title">🌳 Trees Planted</h3>
+      <div style={{ display: 'flex', justifyContent: 'center', maxHeight: '500px', width: '100%' }}>
         <svg ref={svgRef}></svg>
       </div>
       <div className="tree-info">
         <p className="tree-info-text">
-          <strong>Objectif:</strong> 100 arbres = 2000 kg CO₂ absorbés/an
+          <strong>Goal:</strong> 100 trees = 2000 kg CO₂ absorbed/year
         </p>
         <p className="tree-info-text">
-          1 arbre absorbe ~20 kg de CO₂ par an pendant 20 ans
+          1 tree absorbs ~20 kg of CO₂ per year for 20 years
         </p>
       </div>
     </div>
