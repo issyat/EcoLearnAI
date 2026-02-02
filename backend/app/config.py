@@ -22,7 +22,16 @@ class Settings(BaseSettings):
 
     # GPT API
     gpt_api_key: str = ""
-    gpt_api_url: str = "https://api.dat1.co/api/v1/collection/gpt-120-oss/invoke-chat"
+    gpt_api_url: str = (
+        "https://api.dat1.co/api/v1/collection/gpt-120-oss/invoke-chat"
+    )
+
+    # Climatiq API
+    climatiq_api_key: str = ""
+    climatiq_api_url: str = "https://api.climatiq.io/estimate"
+
+    # Carbon calculation constants
+    kg_co2_per_tree: float = 21.77  # Average CO2 absorbed per tree per year
 
     @property
     def database_url(self) -> str:

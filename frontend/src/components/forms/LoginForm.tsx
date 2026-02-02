@@ -23,13 +23,13 @@ export default function LoginForm({ onSubmit, loading = false }: LoginFormProps)
     const newErrors: Partial<LoginData> = {};
 
     if (!formData.email.trim()) {
-      newErrors.email = 'L\'email est requis';
+      newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Veuillez entrer un email valide';
+      newErrors.email = 'Please enter a valid email';
     }
 
     if (!formData.password) {
-      newErrors.password = 'Le mot de passe est requis';
+      newErrors.password = 'Password is required';
     }
 
     setErrors(newErrors);
@@ -69,7 +69,7 @@ export default function LoginForm({ onSubmit, loading = false }: LoginFormProps)
     <form className="login-form" onSubmit={handleSubmit}>
       <div className="form-group">
         <label htmlFor="email" className="form-label">
-          Adresse Email
+          Email Address
         </label>
         <input
           type="email"
@@ -78,7 +78,7 @@ export default function LoginForm({ onSubmit, loading = false }: LoginFormProps)
           className={`form-input ${errors.email ? 'input-error' : ''}`}
           value={formData.email}
           onChange={handleChange}
-          placeholder="votre.email@exemple.com"
+          placeholder="your.email@example.com"
           disabled={loading}
         />
         {errors.email && <span className="error-message">{errors.email}</span>}
@@ -86,7 +86,7 @@ export default function LoginForm({ onSubmit, loading = false }: LoginFormProps)
 
       <div className="form-group">
         <label htmlFor="password" className="form-label">
-          Mot de Passe
+          Password
         </label>
         <div className="password-input-wrapper">
           <input
@@ -117,7 +117,7 @@ export default function LoginForm({ onSubmit, loading = false }: LoginFormProps)
         className="submit-button"
         disabled={loading}
       >
-        {loading ? 'Connexion en cours...' : 'Se connecter'}
+        {loading ? 'Logging in...' : 'Log In'}
       </button>
     </form>
   );

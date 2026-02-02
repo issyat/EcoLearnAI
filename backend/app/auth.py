@@ -88,5 +88,6 @@ async def login(
     
     return TokenResponse(
         access_token=access_token,
-        email=user.email
+        email=user.email,
+        user_id=user.id
     )
