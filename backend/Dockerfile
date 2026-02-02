@@ -11,6 +11,8 @@ RUN pip install --upgrade pip && pip install .
 
 # Copy application code
 COPY app ./app
+COPY alembic.ini ./
+COPY alembic ./alembic
 
 EXPOSE 8000
 
